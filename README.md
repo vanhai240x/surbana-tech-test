@@ -48,5 +48,7 @@ A simple RESTful API built with NestJS, TypeScript, PostgreSQL, and TypeORM to m
 ## Swagger API Documentation
 - Access the Swagger UI at: `http://localhost:3000/api`
 - Provides interactive documentation and testing for all endpoints.
+  
+<img width="1483" alt="Ảnh màn hình 2025-04-08 lúc 15 56 55" src="https://github.com/user-attachments/assets/600f5611-d728-40b8-babb-712f727e9a2d" />
 
 
