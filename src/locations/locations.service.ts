@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Location } from './entities/location.entity';
@@ -21,7 +21,7 @@ export class LocationsService {
       this.logger.info(`Created location: ${createLocationDto.locationNumber}`);
       return await this.locationsRepository.save(location);
     } catch (error) {
-      if (error.code === '23505') { // Mã lỗi PostgreSQL cho unique constraint violation
+      if (error.code === '23505') {
         this.logger.warn(`Duplicate locationNumber: ${createLocationDto.locationNumber}`);
         throw new ConflictException(`Location with locationNumber '${createLocationDto.locationNumber}' already exists`);
       }
@@ -59,5 +59,39 @@ export class LocationsService {
     const location = await this.findOne(id);
     await this.locationsRepository.remove(location);
     this.logger.info(`Deleted location: ${location.locationNumber}`);
+  }
+
+  async findTree(): Promise<Location[]> {
+    try {
+      this.logger.info('Fetching location tree');
+      const allLocations = await this.locationsRepository.find();
+
+      if (!allLocations || allLocations.length === 0) {
+        this.logger.warn('No locations found');
+        return [];
+      }
+
+      const locationMap = new Map<number, Location>();
+      allLocations.forEach((loc) => {
+        loc.children = [];
+        locationMap.set(loc.id, loc);
+      });
+
+      allLocations.forEach((loc) => {
+        if (loc.parentId) {
+          const parent = locationMap.get(loc.parentId);
+          if (parent) {
+            parent.children.push(loc);
+          }
+        }
+      });
+
+      const tree = allLocations.filter((loc) => !loc.parentId);
+      this.logger.info(`Found ${tree.length} root nodes`);
+      return tree;
+    } catch (error) {
+      this.logger.error(`Error fetching tree: ${error.message}`);
+      throw error;
+    }
   }
 }

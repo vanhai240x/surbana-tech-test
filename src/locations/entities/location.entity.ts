@@ -1,7 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity()
+@Entity('locations')
 export class Location {
   @ApiProperty({ description: 'The unique ID of the location', example: 1 })
   @PrimaryGeneratedColumn()
@@ -28,7 +28,11 @@ export class Location {
   parentId: number;
 
   @ApiProperty({ description: 'The parent location (if any)', type: () => Location, required: false })
-  @ManyToOne(() => Location, (location) => location.id, { nullable: true })
+  @ManyToOne(() => Location, (location) => location.children, { nullable: true })
   @JoinColumn({ name: 'parentId' })
   parent: Location;
+
+  @ApiProperty({ description: 'The child locations', type: () => [Location] })
+  @OneToMany(() => Location, (location) => location.parent)
+  children: Location[];
 }

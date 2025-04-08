@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsString, IsNumber, IsOptional, Min, ValidateIf } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateLocationDto {
@@ -21,6 +21,7 @@ export class CreateLocationDto {
 
   @ApiProperty({ description: 'The parent location ID (optional)', example: null, required: false })
   @IsOptional()
-  @IsNumber()
+  @ValidateIf((o) => o.parentId !== null && o.parentId !== undefined)
+  @IsNumber({}, { message: 'parentId must be a valid number or null' })
   parentId?: number;
 }

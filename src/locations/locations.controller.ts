@@ -5,7 +5,7 @@ import { UpdateLocationDto } from './dto/update-location.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { Location } from './entities/location.entity';
 
-@ApiTags('locations') // Nhóm các endpoint dưới tag 'locations'
+@ApiTags('locations')
 @Controller('locations')
 export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}
@@ -25,6 +25,13 @@ export class LocationsController {
   @ApiResponse({ status: 200, description: 'List of locations', type: [Location] })
   findAll(): Promise<Location[]> {
     return this.locationsService.findAll();
+  }
+
+  @Get('tree')
+  @ApiOperation({ summary: 'Get locations as a tree structure' })
+  @ApiResponse({ status: 200, description: 'Tree of locations', type: [Location] })
+  findTree(): Promise<Location[]> {
+    return this.locationsService.findTree();
   }
 
   @Get(':id')

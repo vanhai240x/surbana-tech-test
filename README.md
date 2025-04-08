@@ -30,6 +30,7 @@ A simple RESTful API built with NestJS, TypeScript, PostgreSQL, and TypeORM to m
 ## API Endpoints
 - GET /locations: Retrieve all locations.
 - GET /locations/:id: Retrieve a location by ID.
+- GET /locations/tree: Retrieve locations as a tree.
 - POST /locations: Create a new location (Body: { "building": "A", "locationName": "Car Park", "locationNumber": "A-CarPark", "area": 80.62, "parentId": - null }).
 - PATCH /locations/:id: Update a location.
 - DELETE /locations/:id: Delete a location.
